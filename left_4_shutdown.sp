@@ -10,6 +10,7 @@ public Plugin myinfo =
 };
 
 static bool shouldShutdownOnEmpty = false;
+static int  tick                  = 0;
 
 public void OnPluginStart()
 {
@@ -40,14 +41,21 @@ public Action OnTimerEnded(Handle timer)
 
     if (GetOnlinePlayersCount() <= 0)
     {
-        PrintToServer("[Left 4 Shutdown] No more players online, shutdown the server...");
-        ServerCommand("quit");
-        return Plugin_Stop;
+        if (tick > 2)
+        {
+            PrintToServer("[Left 4 Shutdown] No more players online, shutdown the server...");
+            ServerCommand("quit");
+            return Plugin_Stop;
+        }
+        else {
+            tick++;
+        }
     }
     else {
-        // Players online no server quit
-        return Plugin_Handled;
+        tick = 0;
     }
+
+    return Plugin_Handled;
 }
 
 /// REGION Utils
